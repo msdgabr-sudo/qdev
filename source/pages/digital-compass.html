@@ -1,0 +1,52 @@
+<!-- QiblaAstro R1 — standalone digital compass screen. No legacy DOM slots. -->
+<section class="qd-screen" id="qd-screen" aria-label="البوصلة الرقمية">
+  <canvas id="qd-canvas" class="qd-canvas" width="660" height="660" aria-label="رسم البوصلة الرقمية"></canvas>
+
+  <div class="qd-metrics">
+    <article class="qd-card">
+      <div class="qd-card-icon">🧭</div>
+      <div class="qd-card-title">البوصلة الرقمية</div>
+      <div class="qd-card-value" id="qd-heading">---°</div>
+      <div class="qd-card-sub" id="qd-heading-sub">جاري قراءة المستشعر</div>
+    </article>
+    <article class="qd-card">
+      <div class="qd-card-icon">🕋</div>
+      <div class="qd-card-title">القبلة الحسابية</div>
+      <div class="qd-card-value" id="qd-qibla">---°</div>
+      <div class="qd-card-sub" id="qd-gnss">بانتظار GNSS</div>
+    </article>
+    <article class="qd-card">
+      <div class="qd-card-icon">🎯</div>
+      <div class="qd-card-title">درجة الانحراف</div>
+      <div class="qd-card-value" id="qd-diff">---°</div>
+      <div class="qd-card-sub" id="qd-dir">بانتظار القراءات</div>
+    </article>
+  </div>
+
+  <button type="button" id="qd-permission" class="qd-permission">تشغيل مستشعر الاتجاه</button>
+
+  <div class="qd-actions">
+    <button type="button" class="qd-action" id="qd-calibrate">
+      <span class="qd-action-icon">↻</span><b>معايرة البوصلة</b><small>تحريك الهاتف بشكل 8</small>
+    </button>
+    <div class="qd-confidence" id="qd-confidence">
+      <span class="qd-action-icon">◎</span><b>درجة الثقة</b><small id="qd-confidence-label">بانتظار قراءة مستقرة</small>
+      <span class="qd-confidence-track"><i id="qd-confidence-bar"></i></span>
+    </div>
+    <button type="button" class="qd-action" id="qd-gps">
+      <span class="qd-action-icon">🛰️</span><b>GNSS &amp; GPS</b><small id="qd-gps-label">تحديد الموقع الجغرافي</small>
+    </button>
+  </div>
+
+  <section class="qd-dev" aria-label="حاسبة الانحراف عن القبلة">
+    <div class="qd-dev-title">📐 الانحراف عن القبلة</div>
+    <div class="qd-dev-stats">
+      <div class="qd-dev-stat"><span>الخطأ الزاوي</span><strong id="qd-dev-deg">5.0°</strong></div>
+      <div class="qd-dev-stat"><span>الانحراف التقريبي</span><strong id="qd-dev-km">—</strong></div>
+    </div>
+    <div class="qd-dev-hint">حرّك الشريط لمعاينة أثر الخطأ الزاوي</div>
+    <div class="qd-dev-slider"><span>0°</span><input id="qd-dev-slider" type="range" min="0" max="30" step="0.1" value="5"><span>30°</span></div>
+    <div class="qd-dev-radar" id="qd-dev-radar">5.0°</div>
+    <div class="qd-dev-result" id="qd-dev-result">خطأ زاوي 5.0°</div>
+  </section>
+</section>

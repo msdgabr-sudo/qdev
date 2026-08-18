@@ -37,6 +37,9 @@ const ids=[
 ];
 const elements=Object.fromEntries(ids.map((id)=>[id,element(id==='qd-dev-slider'?'5':'')]));
 elements['qd-canvas'].getContext=()=>({});
+const foreignElements=Object.fromEntries(ids.map((id)=>[id,element()]));
+const screen=element();
+screen.querySelector=(selector)=>elements[selector.slice(1)]||null;
 
 let subscribeCount=0;
 let unsubscribeCount=0;
@@ -51,7 +54,7 @@ const snapshot={
 };
 
 const sandbox={
-  document:{getElementById:(id)=>elements[id]||null},
+  document:{getElementById:(id)=>id==='qd-screen'?screen:(foreignElements[id]||null)},
   navigator:{},
   requestAnimationFrame(callback){const id=nextRaf++;rafCallbacks.set(id,callback);return id;},
   cancelAnimationFrame(id){rafCallbacks.delete(id);},
@@ -84,6 +87,7 @@ vm.runInNewContext(source,sandbox,{filename:'digital-compass-controller.js'});
   assert.strictEqual(elements['qd-heading'].textContent,'---°','missing heading must remain unavailable');
   assert.strictEqual(elements['qd-qibla'].textContent,'136.2°');
   assert.strictEqual(elements['qd-diff'].textContent,'---°','missing deviation must remain unavailable');
+  assert.strictEqual(foreignElements['qd-qibla'].textContent,'','controller must not update a matching node outside the screen root');
 
   for(const [id,callback] of [...rafCallbacks]){rafCallbacks.delete(id);callback();}
   assert.strictEqual(renderCount,1,'queued state updates must resolve through one render frame');
@@ -94,6 +98,7 @@ vm.runInNewContext(source,sandbox,{filename:'digital-compass-controller.js'});
   assert.strictEqual(unsubscribeCount,1,'unmount must unsubscribe once');
   assert.strictEqual(sensorStops,1,'unmount must stop the sensor once');
   assert.strictEqual(elements['qd-gps'].listenerCount(),0,'unmount must remove action listeners');
+  assert.strictEqual(foreignElements['qd-gps'].listenerCount(),0,'controller must not bind outside the screen root');
 
   console.log('PASS qdev R1 controller lifecycle');
 })().catch((error)=>{console.error(error);process.exitCode=1;});

@@ -19,6 +19,12 @@ is integrated back into the application.
 ### Stage 1 — single-layer visual system
 
 - One visible Digital Compass canvas.
+- One contained visual root (`#qd-screen`) with no absolute, fixed, or sticky
+  presentation overlays.
+- CSS selectors and custom properties are scoped to the Digital Compass root;
+  the experiment does not style `:root`, `html`, `body`, or unrelated nodes.
+- The controller resolves the screen root once and queries UI nodes only inside
+  that root.
 - One standalone renderer and one render entry point.
 - No legacy compass renderer, DOM overlay, or scientific calculation.
 - The offscreen canvas is an internal drawing buffer only; it is not a second

@@ -6,8 +6,17 @@
   var lastState=null;
   var headingSamples=[];
   var actionCleanups=[];
+  var screenRoot=null;
 
-  function byId(id){return root.document&&root.document.getElementById(id);}
+  function findScreenRoot(){
+    return root.document&&root.document.getElementById('qd-screen');
+  }
+
+  function byId(id){
+    if(!screenRoot)return null;
+    if(id==='qd-screen')return screenRoot;
+    return screenRoot.querySelector('#'+id);
+  }
   function finite(v){return typeof v==='number'&&Number.isFinite(v);}
   function fmt(v,d){return finite(v)?v.toFixed(d==null?1:d)+'°':'---°';}
 
@@ -81,7 +90,7 @@
         Math.abs(s.deviation)<.5?'الاتجاه مطابق للقبلة':
         (s.deviation>0?'أدر الهاتف يمينًا':'أدر الهاتف يسارًا');
     }
-    if(perm)perm.classList.toggle('show',s.sensorState==='permission-required');
+    if(perm)perm.classList.toggle('qd-permission-visible',s.sensorState==='permission-required');
     updateConfidence(s);
     schedule();
   }
@@ -130,6 +139,11 @@
     if(!root.QiblaDigitalCompassState||!root.QiblaDigitalCompassSensor||!root.QiblaDigitalCompassRenderer){
       throw new Error('Digital compass modules missing');
     }
+    screenRoot=findScreenRoot();
+    if(!screenRoot||typeof screenRoot.querySelector!=='function'){
+      screenRoot=null;
+      throw new Error('Digital compass screen root missing');
+    }
     mounted=true;
     bindActions();
     updateDeviationPreview();
@@ -149,6 +163,7 @@
     if(raf){root.cancelAnimationFrame(raf);raf=0;}
     headingSamples.length=0;
     lastState=null;
+    screenRoot=null;
   }
 
   root.QiblaDigitalCompassController=Object.freeze({

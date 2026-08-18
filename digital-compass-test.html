@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="qd-test-document">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
@@ -7,8 +7,8 @@
   <title>QiblaAstro R1 — Digital Compass Test</title>
   <link rel="stylesheet" href="source/css/digital-compass/digital-compass.css">
 </head>
-<body>
-  <main id="app"></main>
+<body class="qd-test-body">
+  <main id="qd-test-app" class="qd-test-app"></main>
   <script src="source/js/digital-compass/digital-compass-state.js"></script>
   <script src="source/js/digital-compass/digital-compass-sensor.js"></script>
   <script src="source/js/digital-compass/digital-compass-renderer.js"></script>
@@ -16,7 +16,7 @@
   <script>
   (async function(){
     const html=await fetch('source/pages/digital-compass.html',{cache:'no-store'}).then(r=>r.text());
-    document.getElementById('app').innerHTML=html;
+    document.getElementById('qd-test-app').innerHTML=html;
     // Preview-only qibla value. Production integration reads the authoritative QT through the read-only adapter.
     QiblaDigitalCompassState.setQiblaForTest(136.2);
     QiblaDigitalCompassController.mount();

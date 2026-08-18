@@ -2,7 +2,7 @@
 (function(root){'use strict';
   var active=false,bound=false,needsGesture=false;
   function state(){return root.QiblaDigitalCompassState;}
-  function finite(v){return Number.isFinite(Number(v));}
+  function finite(v){return typeof v==='number'&&Number.isFinite(v);}
   function headingFromEvent(e){
     if(e&&finite(e.webkitCompassHeading))return Number(e.webkitCompassHeading);
     if(e&&e.absolute===true&&finite(e.alpha))return (360-Number(e.alpha))%360;
@@ -14,7 +14,8 @@
   function unbind(){if(!bound)return;root.removeEventListener('deviceorientationabsolute',onOrientation,true);root.removeEventListener('deviceorientation',onOrientation,true);bound=false;}
   async function requestPermission(){
     var C=root.DeviceOrientationEvent;
-    if(!C||typeof C.requestPermission!=='function'){state().setSensorState('starting','not-required');bind();return true;}
+    if(!C){state().setSensorState('unavailable','unsupported');return false;}
+    if(typeof C.requestPermission!=='function'){state().setSensorState('starting','not-required');bind();return true;}
     try{
       var result=await C.requestPermission(true);
       if(result==='granted'){needsGesture=false;state().setSensorState('starting','granted');bind();return true;}

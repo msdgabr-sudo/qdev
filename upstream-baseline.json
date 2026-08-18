@@ -1,0 +1,22 @@
+{
+  "repository": "msdgabr-sudo/q-app-an",
+  "branch": "main",
+  "commit": "cc2d1c2389a3de4d2cb4dbb6329da868dd1e6247",
+  "recordedAt": "2026-08-19",
+  "scope": "digital-compass-single-layer-lab",
+  "criticalBlobs": {
+    "source/index.html": "e7729e1eaa9ed114bffe20db3dfc7ee773364bc5",
+    "source/pages/compass.html": "b732f529a208ff5640d4498d4a8a48f59684e441",
+    "source/js/04-core.js": "e7e42583bd6d5c8599e8facbe63c24a6cc8e5b7a",
+    "source/js/05-gnss.js": "faadbfa640502829dabc45754bc74a6c670b8157",
+    "source/js/12-compass-canvas.js": "40519842a9e515bc4804c3e66717c814c50b5ff4",
+    "source/js/17-deviation.js": "8d20b1a762ee5350ec814a70b3654db4ce6de524",
+    "source/js/20-device-compass.js": "ccb80e929c349d978d784a7f4326b71780246a8a",
+    "source/js/qibla-card-runtime.js": "de4b87f7dc653a487a1e80de5ae766c9faf12357",
+    "source/js/presentation/bootstrap.js": "33830d87758cc7243cb1c1d0ecf7e5b139092d12",
+    "source/js/presentation/compass/host.js": "6a67ec741999923ba1f7157a53bfae060aa74867",
+    "source/js/compass-mode-view.js": "0b395bdab50eb62b3fec20161080b895cf1982b2",
+    "source/js/compass-premium-render.js": "b2e1d8bfe58165574552db60fb4e2e86bb24f635",
+    "source/service-worker.js": "23426854d6fed0d2e821473497e2560a76b60b25"
+  }
+}

@@ -16,9 +16,9 @@
     permissionState:'unknown',
     updatedAt:0
   };
-  function finite(v){return Number.isFinite(Number(v));}
-  function norm360(v){v=Number(v);return ((v%360)+360)%360;}
-  function angleDiff(target,current){return ((Number(target)-Number(current)+540)%360)-180;}
+  function finite(v){return typeof v==='number'&&Number.isFinite(v);}
+  function norm360(v){return finite(v)?((v%360)+360)%360:null;}
+  function angleDiff(target,current){return finite(target)&&finite(current)?((target-current+540)%360)-180:null;}
   function clone(){return Object.freeze(Object.assign({},state));}
   function emit(){var snap=clone();listeners.slice().forEach(function(fn){try{fn(snap);}catch(_){}});}
   function patch(next){
@@ -38,7 +38,7 @@
   }
   function setSensorHeading(heading,accuracy){
     var next={compassAvailable:finite(heading),heading:finite(heading)?norm360(heading):null};
-    if(finite(accuracy))next.compassAccuracy=Math.abs(Number(accuracy));
+    next.compassAccuracy=finite(accuracy)?Math.abs(accuracy):null;
     return patch(next);
   }
   function setSensorState(sensorState,permissionState){return patch({sensorState:sensorState,permissionState:permissionState||state.permissionState});}

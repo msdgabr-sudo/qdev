@@ -15,6 +15,8 @@ const stateSource=read('source/js/digital-compass/digital-compass-state.js');
 const sensor=read('source/js/digital-compass/digital-compass-sensor.js');
 const renderer=read('source/js/digital-compass/digital-compass-renderer.js');
 const controller=read('source/js/digital-compass/digital-compass-controller.js');
+const bootstrap=read('source/js/digital-compass/digital-compass-bootstrap.js');
+const previewAdapter=read('source/js/digital-compass/digital-compass-preview-adapter.js');
 const baseline=JSON.parse(read('upstream-baseline.json'));
 
 assert.strictEqual(
@@ -31,7 +33,7 @@ assert(renderer.includes('out.drawImage(off,0,0,W,H)'),'internal drawing must re
 assert(css.includes('.qd-screen')&&css.includes('.qd-canvas'),'visual selectors must remain qd-namespaced');
 assert(!/#cvs\b|#page-compass\b/.test(css),'isolated CSS must not style production compass nodes');
 
-for(const [name,source] of Object.entries({stateSource,sensor,renderer,controller})){
+for(const [name,source] of Object.entries({stateSource,sensor,renderer,controller,bootstrap,previewAdapter})){
   assert(!/\bcalcQibla\b/.test(source),name+' must not calculate Qibla');
   assert(!/\bQT\s*=/.test(source),name+' must not write QT');
   assert(!/WMM2025|MDECL|getUserMedia|mediaDevices|camera-engine|celestial-solver/i.test(source),name+' crossed a protected engine boundary');

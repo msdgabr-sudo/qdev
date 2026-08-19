@@ -145,13 +145,18 @@
       throw new Error('Digital compass screen root missing');
     }
     mounted=true;
-    bindActions();
-    updateDeviationPreview();
-    unsub=root.QiblaDigitalCompassState.subscribe(updateUI);
-    root.QiblaDigitalCompassState.readHost();
-    await root.QiblaDigitalCompassSensor.start();
-    schedule();
-    return true;
+    try{
+      bindActions();
+      updateDeviationPreview();
+      unsub=root.QiblaDigitalCompassState.subscribe(updateUI);
+      root.QiblaDigitalCompassState.readHost();
+      await root.QiblaDigitalCompassSensor.start();
+      schedule();
+      return true;
+    }catch(error){
+      unmount();
+      throw error;
+    }
   }
 
   function unmount(){

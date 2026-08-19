@@ -45,6 +45,7 @@ let subscribeCount=0;
 let unsubscribeCount=0;
 let sensorStarts=0;
 let sensorStops=0;
+let sensorShouldFail=false;
 let renderCount=0;
 let nextRaf=1;
 const rafCallbacks=new Map();
@@ -64,7 +65,7 @@ const sandbox={
     angleDiff(target,current){return ((target-current+540)%360)-180;}
   },
   QiblaDigitalCompassSensor:{
-    async start(){sensorStarts++;return true;},
+    async start(){sensorStarts++;if(sensorShouldFail)throw new Error('sensor failed');return true;},
     async startFromGesture(){return true;},
     stop(){sensorStops++;}
   },
@@ -99,6 +100,13 @@ vm.runInNewContext(source,sandbox,{filename:'digital-compass-controller.js'});
   assert.strictEqual(sensorStops,1,'unmount must stop the sensor once');
   assert.strictEqual(elements['qd-gps'].listenerCount(),0,'unmount must remove action listeners');
   assert.strictEqual(foreignElements['qd-gps'].listenerCount(),0,'controller must not bind outside the screen root');
+
+  sensorShouldFail=true;
+  await assert.rejects(()=>controller.mount(),/sensor failed/);
+  assert.strictEqual(controller.isMounted(),false,'failed mount must roll back controller state');
+  assert.strictEqual(unsubscribeCount,2,'failed mount must remove its state subscription');
+  assert.strictEqual(sensorStops,2,'failed mount must stop the partially started sensor lifecycle');
+  assert.strictEqual(elements['qd-gps'].listenerCount(),0,'failed mount must remove action listeners');
 
   console.log('PASS qdev R1 controller lifecycle');
 })().catch((error)=>{console.error(error);process.exitCode=1;});

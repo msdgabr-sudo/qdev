@@ -32,9 +32,15 @@ is integrated back into the application.
 
 ### Stage 2 — HTML externalization
 
-After Stage 1 visual and phone acceptance, move the remaining inline bootstrap
-out of `digital-compass-test.html`. HTML will only declare the shell and load
-external assets. This stage must remain separate from Stage 1.
+- `digital-compass-test.html` is a declarative shell containing external
+  `href`/`src` calls only.
+- `source/pages/digital-compass.html` contains the screen markup only.
+- `digital-compass-bootstrap.js` owns screen loading, validation, startup,
+  error handling, and lifecycle cleanup.
+- `digital-compass-preview-adapter.js` is the explicit test-only source of the
+  standalone preview value and is not part of a production integration.
+- CSS, state, sensor, renderer, controller, and bootstrap code remain separate
+  files under the Digital Compass namespace.
 
 ### Stage 3 — read-only application integration
 

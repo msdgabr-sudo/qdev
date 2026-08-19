@@ -9,18 +9,11 @@
 </head>
 <body class="qd-test-body">
   <main id="qd-test-app" class="qd-test-app"></main>
-  <script src="source/js/digital-compass/digital-compass-state.js"></script>
-  <script src="source/js/digital-compass/digital-compass-sensor.js"></script>
-  <script src="source/js/digital-compass/digital-compass-renderer.js"></script>
-  <script src="source/js/digital-compass/digital-compass-controller.js"></script>
-  <script>
-  (async function(){
-    const html=await fetch('source/pages/digital-compass.html',{cache:'no-store'}).then(r=>r.text());
-    document.getElementById('qd-test-app').innerHTML=html;
-    // Preview-only qibla value. Production integration reads the authoritative QT through the read-only adapter.
-    QiblaDigitalCompassState.setQiblaForTest(136.2);
-    QiblaDigitalCompassController.mount();
-  })();
-  </script>
+  <script defer src="source/js/digital-compass/digital-compass-state.js"></script>
+  <script defer src="source/js/digital-compass/digital-compass-preview-adapter.js"></script>
+  <script defer src="source/js/digital-compass/digital-compass-sensor.js"></script>
+  <script defer src="source/js/digital-compass/digital-compass-renderer.js"></script>
+  <script defer src="source/js/digital-compass/digital-compass-controller.js"></script>
+  <script defer src="source/js/digital-compass/digital-compass-bootstrap.js"></script>
 </body>
 </html>

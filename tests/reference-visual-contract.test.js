@@ -41,8 +41,19 @@ assert(css.includes('top: calc(env(safe-area-inset-top, 0px) + 46px)'),'home con
 assert(css.includes('right: 12px'),'home control must retain the approved RTL edge position');
 assert(page.includes('width="21" height="21"'),'home glyph must retain the approved 21px size');
 assert(css.includes('width: min(97vw, 55vh, 500px)'),'compass footprint must match the approved final layout');
-assert(css.includes('margin: 18px auto 3px'),'compass must retain the application page vertical offset');
+assert(css.includes('margin: -7px auto 3px'),'compass must retain the final application page vertical offset');
+assert(css.includes('margin: -5px auto 4px'),'820px-height compass offset must match the final application rule');
+assert(css.includes('margin: -3px auto 4px'),'700px-height compass offset must match the final application rule');
+assert(css.includes('margin: -1px auto 4px'),'610px-height compass offset must match the final application rule');
 assert(css.includes('grid-template-columns: repeat(3, minmax(0, 1fr))'),'both card rows must retain three equal columns');
+
+// The screenshot reference uses a 48px page inset and the final -7px canvas
+// margin. Derive both values from CSS so this fails if either rule regresses.
+const pageTop=Number(css.match(/padding:\s*(-?\d+)px 12px max/)[1]);
+const compassTop=Number(css.match(/\.qd-screen \.qd-canvas\s*\{[\s\S]*?margin:\s*(-?\d+)px auto 3px/)[1]);
+const homeTop=Number(css.match(/top:\s*calc\(env\(safe-area-inset-top, 0px\) \+ (-?\d+)px\)/)[1]);
+assert.strictEqual(pageTop+compassTop,41,'approved compass flow offset must remain 41px');
+assert.strictEqual(homeTop,46,'approved home offset must remain independent from compass flow');
 
 assert(renderer.includes('for(var d=0;d<360;d+=10)'),'inner dial degree labels must not be simplified away');
 assert(renderer.includes('ctx.ellipse(0,0,R*.614,R*.172'),'approved inner orbital detail must be present');

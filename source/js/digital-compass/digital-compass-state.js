@@ -9,6 +9,7 @@
     compassAvailable:false,
     compassAccuracy:null,
     gnssTrusted:false,
+    gnssAccuracy:null,
     latitude:null,
     longitude:null,
     deviation:null,
@@ -33,6 +34,7 @@
     try{next.compassAvailable=!!root.compassAvailable;}catch(_){}
     try{if(finite(root.compassAccuracy))next.compassAccuracy=Math.abs(Number(root.compassAccuracy));}catch(_){}
     try{next.gnssTrusted=root.gnssHasTrustedFix===true&&root.gnssSource==='gps';}catch(_){}
+    try{if(next.gnssTrusted&&finite(root.gnssAccuracy))next.gnssAccuracy=Math.abs(Number(root.gnssAccuracy));}catch(_){}
     try{if(next.gnssTrusted&&finite(root.LAT)&&finite(root.LON)){next.latitude=Number(root.LAT);next.longitude=Number(root.LON);}}catch(_){}
     return patch(next);
   }

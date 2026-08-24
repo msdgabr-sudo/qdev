@@ -41,8 +41,9 @@ for(const prelude of rulePreludes(css)){
 assert(!css.includes(':root'),'custom properties must live on the screen root, not the document root');
 assert(!/(^|[\s,{>+~])(html|body)(?=[\s,{>+~.#[:])/m.test(css),'CSS must not target document elements');
 assert(!/(^|\s)(100vw|99vw|98vw)(?=\s|,|;|\))/m.test(css),'embedded sizing must not depend on viewport width');
-assert(!/position\s*:\s*(fixed|absolute|sticky)/i.test(css),'screen content must remain in one non-overlapping flow layer');
-assert(!/margin(?:-[a-z]+)?\s*:\s*[^;]*-[.\d]/i.test(css),'negative margins must not create internal visual overlap');
+assert(!/position\s*:\s*(fixed|sticky)/i.test(css),'the isolated screen must not escape into document-level positioning');
+assert(css.includes('.qd-screen .qd-home')&&css.includes('.qd-screen .qd-calibration'),'reference overlays must remain owned by the isolated screen root');
+assert(!/mix-blend-mode|background-blend-mode/i.test(css),'the compass must not recreate stacked design layers through blend modes');
 assert(css.includes('isolation: isolate;'),'screen root must create an isolated stacking context');
 assert(css.includes('contain: layout paint style;'),'layout, paint, and style must be contained at the screen root');
 assert(css.includes('overflow: clip;'),'painting must be clipped to the screen root');

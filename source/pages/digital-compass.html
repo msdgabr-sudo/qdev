@@ -1,40 +1,44 @@
-<!-- QiblaAstro R1 — standalone digital compass screen. No legacy DOM slots. -->
+<!-- QiblaAstro R1 — isolated Digital Compass presentation fragment. -->
 <section class="qd-screen" id="qd-screen" aria-label="البوصلة الرقمية">
+  <button class="qd-home" id="qd-home" type="button" aria-label="العودة إلى الشاشة الرئيسية" title="الرئيسية">
+    <svg viewBox="0 0 24 24" width="25" height="25" aria-hidden="true">
+      <path d="M3.5 10.5 12 3l8.5 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-4.5v-6h-5v6H5a1.5 1.5 0 0 1-1.5-1.5z"></path>
+    </svg>
+  </button>
+
   <canvas id="qd-canvas" class="qd-canvas" width="660" height="660" aria-label="رسم البوصلة الرقمية"></canvas>
 
   <div class="qd-metrics">
+    <button class="qd-card qd-card-live" id="qd-activate" type="button" aria-label="تفعيل البوصلة الرقمية">
+      <img class="qd-card-icon" src="source/icons/hm-compass.png" alt="">
+      <span class="qd-card-title">البوصلة الرقمية</span>
+      <strong class="qd-card-value" id="qd-heading">---°</strong>
+      <small class="qd-card-sub" id="qd-heading-sub">اضغط للتفعيل</small>
+    </button>
     <article class="qd-card">
-      <div class="qd-card-icon">🧭</div>
-      <div class="qd-card-title">البوصلة الرقمية</div>
-      <div class="qd-card-value" id="qd-heading">---°</div>
-      <div class="qd-card-sub" id="qd-heading-sub">جاري قراءة المستشعر</div>
+      <img class="qd-card-icon" src="source/icons/icon-kaaba.png" alt="">
+      <span class="qd-card-title">القبلة الحسابية</span>
+      <strong class="qd-card-value" id="qd-qibla">---°</strong>
+      <small class="qd-card-sub" id="qd-gnss">بانتظار GNSS</small>
     </article>
     <article class="qd-card">
-      <div class="qd-card-icon">🕋</div>
-      <div class="qd-card-title">القبلة الحسابية</div>
-      <div class="qd-card-value" id="qd-qibla">---°</div>
-      <div class="qd-card-sub" id="qd-gnss">بانتظار GNSS</div>
-    </article>
-    <article class="qd-card">
-      <div class="qd-card-icon">🎯</div>
-      <div class="qd-card-title">درجة الانحراف</div>
-      <div class="qd-card-value" id="qd-diff">---°</div>
-      <div class="qd-card-sub" id="qd-dir">بانتظار القراءات</div>
+      <img class="qd-card-icon" src="source/icons/icon-sextant.png" alt="">
+      <span class="qd-card-title">درجة الانحراف</span>
+      <strong class="qd-card-value" id="qd-diff">---°</strong>
+      <small class="qd-card-sub" id="qd-dir">فعّل البوصلة</small>
     </article>
   </div>
 
-  <button type="button" id="qd-permission" class="qd-permission">تشغيل مستشعر الاتجاه</button>
-
   <div class="qd-actions">
-    <button type="button" class="qd-action" id="qd-calibrate">
-      <span class="qd-action-icon">↻</span><b>معايرة البوصلة</b><small>تحريك الهاتف بشكل 8</small>
-    </button>
-    <div class="qd-confidence" id="qd-confidence">
-      <span class="qd-action-icon">◎</span><b>درجة الثقة</b><small id="qd-confidence-label">بانتظار قراءة مستقرة</small>
-      <span class="qd-confidence-track"><i id="qd-confidence-bar"></i></span>
-    </div>
     <button type="button" class="qd-action" id="qd-gps">
       <span class="qd-action-icon">🛰️</span><b>GNSS &amp; GPS</b><small id="qd-gps-label">تحديد الموقع الجغرافي</small>
+    </button>
+    <div class="qd-confidence" id="qd-confidence" aria-label="درجة الثقة">
+      <span class="qd-confidence-icon">◎</span><b>درجة الثقة</b><small id="qd-confidence-label">بانتظار تشغيل البوصلة</small>
+      <span class="qd-confidence-track"><i id="qd-confidence-bar"></i></span>
+    </div>
+    <button type="button" class="qd-action" id="qd-calibrate">
+      <span class="qd-action-icon">↩️</span><b>معايرة البوصلة يدوياً</b><small>إعادة ضبط + تصحيح الانحراف</small>
     </button>
   </div>
 
@@ -42,11 +46,36 @@
     <div class="qd-dev-title">📐 الانحراف عن القبلة</div>
     <div class="qd-dev-stats">
       <div class="qd-dev-stat"><span>الخطأ الزاوي</span><strong id="qd-dev-deg">5.0°</strong></div>
-      <div class="qd-dev-stat"><span>الانحراف التقريبي</span><strong id="qd-dev-km">—</strong></div>
+      <div class="qd-dev-stat"><span>الانحراف عن الكعبة</span><strong id="qd-dev-km">113 كم</strong></div>
     </div>
-    <div class="qd-dev-hint">حرّك الشريط لمعاينة أثر الخطأ الزاوي</div>
-    <div class="qd-dev-slider"><span>0°</span><input id="qd-dev-slider" type="range" min="0" max="30" step="0.1" value="5"><span>30°</span></div>
-    <div class="qd-dev-radar" id="qd-dev-radar">5.0°</div>
-    <div class="qd-dev-result" id="qd-dev-result">خطأ زاوي 5.0°</div>
+    <div class="qd-dev-hint">حرّك الشريط لترى أثر الخطأ على الهدف</div>
+    <div class="qd-dev-slider"><span>0°</span><input id="qd-dev-slider" type="range" min="0" max="30" step="0.5" value="5" aria-label="الخطأ الزاوي"><span>30°</span></div>
+    <canvas class="qd-dev-radar" id="qd-dev-canvas" width="360" height="190" aria-label="رسم أثر الانحراف"></canvas>
+    <div class="qd-dev-result" id="qd-dev-result">خطأ 5.0° = 113 كم انحراف</div>
+  </section>
+
+  <section class="qd-calibration" id="qd-calibration" hidden aria-label="معايرة البوصلة يدوياً">
+    <div class="qd-calibration-head">
+      <b>↩️ معايرة البوصلة يدوياً</b>
+      <button type="button" id="qd-calibration-close" aria-label="إغلاق المعايرة">✕</button>
+    </div>
+    <div class="qd-calibration-steps">
+      ① أمسك هاتفك <b>أفقياً كالطاولة</b><br>
+      ② حرّكه ببطء شكل <b>رقم 8</b> في الهواء (3 مرات)<br>
+      ③ اضغط «إعادة المعايرة»
+    </div>
+    <svg class="qd-calibration-eight" width="50" height="75" viewBox="0 0 50 75" aria-hidden="true">
+      <ellipse cx="25" cy="18" rx="16" ry="15"></ellipse>
+      <ellipse cx="25" cy="57" rx="16" ry="15"></ellipse>
+    </svg>
+    <button class="qd-calibration-reset" type="button" id="qd-calibration-reset">↩️ إعادة المعايرة</button>
+    <div class="qd-offset">
+      <div><b>تصحيح يدوي للانحراف</b><small>إذا كانت البوصلة منحرفة قليلاً</small></div>
+      <div class="qd-offset-controls">
+        <button type="button" id="qd-offset-minus" aria-label="إنقاص التصحيح">−</button>
+        <span id="qd-offset-value">0°</span>
+        <button type="button" id="qd-offset-plus" aria-label="زيادة التصحيح">+</button>
+      </div>
+    </div>
   </section>
 </section>

@@ -14,6 +14,7 @@ const css=read('source/css/digital-compass/digital-compass.css');
 const stateSource=read('source/js/digital-compass/digital-compass-state.js');
 const sensor=read('source/js/digital-compass/digital-compass-sensor.js');
 const renderer=read('source/js/digital-compass/digital-compass-renderer.js');
+const deviation=read('source/js/digital-compass/digital-compass-deviation.js');
 const controller=read('source/js/digital-compass/digital-compass-controller.js');
 const bootstrap=read('source/js/digital-compass/digital-compass-bootstrap.js');
 const previewAdapter=read('source/js/digital-compass/digital-compass-preview-adapter.js');
@@ -21,10 +22,12 @@ const baseline=JSON.parse(read('upstream-baseline.json'));
 
 assert.strictEqual(
   (testHtml.match(/<canvas\b/gi)||[]).length+(page.match(/<canvas\b/gi)||[]).length,
-  1,
-  'Stage 1 must expose exactly one visible canvas'
+  2,
+  'the screen must expose one compass canvas and one separate deviation chart'
 );
 assert(page.includes('id="qd-canvas"'),'the visible canvas must use the isolated qd-canvas identity');
+assert.strictEqual((page.match(/id="qd-canvas"/g)||[]).length,1,'the compass design must remain one physical canvas layer');
+assert.strictEqual((page.match(/id="qd-dev-canvas"/g)||[]).length,1,'the calculator must retain its separate approved chart');
 assert(!/\bid=["']cvs["']/.test(testHtml+page),'the isolated page must not duplicate the production #cvs engine node');
 assert(!/\bdrawCompass\s*\(/.test(renderer+controller),'legacy drawCompass must not return');
 assert(renderer.includes('QiblaDigitalCompassRenderer=Object.freeze({render:render})'),'renderer must expose one render entry point');
@@ -33,7 +36,7 @@ assert(renderer.includes('out.drawImage(off,0,0,W,H)'),'internal drawing must re
 assert(css.includes('.qd-screen')&&css.includes('.qd-canvas'),'visual selectors must remain qd-namespaced');
 assert(!/#cvs\b|#page-compass\b/.test(css),'isolated CSS must not style production compass nodes');
 
-for(const [name,source] of Object.entries({stateSource,sensor,renderer,controller,bootstrap,previewAdapter})){
+for(const [name,source] of Object.entries({stateSource,sensor,renderer,deviation,controller,bootstrap,previewAdapter})){
   assert(!/\bcalcQibla\b/.test(source),name+' must not calculate Qibla');
   assert(!/\bQT\s*=/.test(source),name+' must not write QT');
   assert(!/WMM2025|MDECL|getUserMedia|mediaDevices|camera-engine|celestial-solver/i.test(source),name+' crossed a protected engine boundary');
@@ -62,7 +65,7 @@ assert.strictEqual(state.angleDiff(null,0),null,'angle difference must reject mi
 
 assert.strictEqual(baseline.repository,'msdgabr-sudo/q-app-an');
 assert.strictEqual(baseline.branch,'main');
-assert.strictEqual(baseline.commit,'cc2d1c2389a3de4d2cb4dbb6329da868dd1e6247');
+assert.strictEqual(baseline.commit,'c38eaf03a9fcfd9fd8197a0865cd4ff4f927cbac');
 assert(Object.keys(baseline.criticalBlobs).length>=10,'upstream baseline must pin the critical integration surface');
 
 console.log('PASS qdev R1 single-layer visual contract');

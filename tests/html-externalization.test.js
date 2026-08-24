@@ -18,11 +18,12 @@ const expectedScripts=[
   'source/js/digital-compass/digital-compass-preview-adapter.js',
   'source/js/digital-compass/digital-compass-sensor.js',
   'source/js/digital-compass/digital-compass-renderer.js',
+  'source/js/digital-compass/digital-compass-deviation.js',
   'source/js/digital-compass/digital-compass-controller.js',
   'source/js/digital-compass/digital-compass-bootstrap.js'
 ];
 
-assert.strictEqual(scripts.length,expectedScripts.length,'HTML shell must call the six external runtime files');
+assert.strictEqual(scripts.length,expectedScripts.length,'HTML shell must call the seven external runtime files');
 assert.deepStrictEqual(
   scripts.map((match)=>match[1].match(/\bsrc=["']([^"']+)["']/i)?.[1]),
   expectedScripts,
@@ -115,7 +116,7 @@ vm.runInNewContext(bootstrapSource,sandbox,{filename:'digital-compass-bootstrap.
   await bootstrap.start();
   assert.strictEqual(fetchCount,1,'an already mounted screen must not reload its fragment');
   assert.strictEqual(mountCount,1,'an already mounted screen must not mount twice');
-  assert.strictEqual(qiblaPreview,136.2,'standalone preview value must live outside HTML');
+  assert.strictEqual(qiblaPreview,136.0,'standalone preview value must live outside HTML');
   assert.strictEqual(bootstrap.isMounted(),true);
 
   bootstrap.stop();

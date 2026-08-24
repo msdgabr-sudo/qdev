@@ -106,6 +106,7 @@
     var deviation=byId('qd-diff');
     var headingSub=byId('qd-heading-sub');
     var gnss=byId('qd-gnss');
+    var gpsLabel=byId('qd-gps-label');
     var direction=byId('qd-dir');
     var activate=byId('qd-activate');
     if(heading)heading.textContent=fmt(state.heading,1);
@@ -113,6 +114,7 @@
     if(deviation)deviation.textContent=finite(state.deviation)?Math.abs(state.deviation).toFixed(1)+'°':'---°';
     if(headingSub)headingSub.textContent=sensorMessage(state);
     if(gnss)gnss.textContent=state.gnssTrusted?'GPS '+(finite(state.gnssAccuracy)?Math.round(state.gnssAccuracy)+'م±':'GNSS'):'بانتظار GNSS';
+    if(gpsLabel&&state.gnssTrusted)gpsLabel.textContent='✓ GPS '+(finite(state.gnssAccuracy)?Math.round(state.gnssAccuracy)+'م':'GNSS');
     if(direction){
       direction.textContent=!finite(state.deviation)?'فعّل البوصلة':
         Math.abs(state.deviation)<.5?'✅ دقيق':

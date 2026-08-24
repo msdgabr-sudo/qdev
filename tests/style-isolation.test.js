@@ -12,7 +12,7 @@ const testHtml=read('digital-compass-test.html');
 const controller=read('source/js/digital-compass/digital-compass-controller.js');
 
 function rulePreludes(source){
-  const clean=source.replace(/\/\*[\s\S]*?\*\//g,'');
+  const clean=source.replace(/\/\*[\s\S]*?\*\//g,'').replace(/^@import[^\n]*\n/m,'');
   const preludes=[];
   let boundary=0;
   for(let index=0;index<clean.length;index++){

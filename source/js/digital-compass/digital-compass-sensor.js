@@ -4,6 +4,8 @@
   var bound=false;
   var needsGesture=false;
   var calibrationOffset=0;
+  var rawHeading=null;
+  var absoluteEvents=0;
 
   try{calibrationOffset=parseFloat(root.localStorage&&root.localStorage.getItem('qibla_calOffset')||'0')||0;}catch(_){}
 
@@ -11,35 +13,54 @@
   function finite(value){return typeof value==='number'&&Number.isFinite(value);}
   function norm360(value){return ((value%360)+360)%360;}
 
-  function headingFromEvent(event){
-    var heading=null;
-    if(event&&finite(event.webkitCompassHeading))heading=Number(event.webkitCompassHeading);
-    else if(event&&event.absolute===true&&finite(event.alpha))heading=360-Number(event.alpha);
-    else if(event&&finite(event.alpha))heading=360-Number(event.alpha);
-    return heading===null?null:norm360(heading+calibrationOffset);
+  function readingFromEvent(event){
+    if(event&&finite(event.webkitCompassHeading)){
+      return {heading:Number(event.webkitCompassHeading),accuracy:finite(event.webkitCompassAccuracy)?Math.abs(Number(event.webkitCompassAccuracy)):null};
+    }
+    if(event&&finite(event.alpha))return {heading:norm360(360-Number(event.alpha)),accuracy:null};
+    return null;
   }
 
   function onOrientation(event){
     if(!active)return;
-    var heading=headingFromEvent(event);
-    if(heading===null)return;
-    var accuracy=finite(event.webkitCompassAccuracy)?Math.abs(Number(event.webkitCompassAccuracy)):null;
-    state().setSensorHeading(heading,accuracy);
+    var reading=readingFromEvent(event);
+    if(!reading)return;
+    if(rawHeading===null)rawHeading=reading.heading;
+    else{
+      var delta=reading.heading-rawHeading;
+      if(delta>180)delta-=360;
+      if(delta<-180)delta+=360;
+      rawHeading=norm360(rawHeading+delta*.15);
+    }
+    state().setSensorHeading(norm360(rawHeading+calibrationOffset),reading.accuracy);
     state().setSensorState('running','granted');
+  }
+
+  function onAbsoluteOrientation(event){
+    if(!readingFromEvent(event))return;
+    absoluteEvents++;
+    onOrientation(event);
+  }
+
+  function onRelativeOrientation(event){
+    if(absoluteEvents!==0)return;
+    onOrientation(event);
   }
 
   function bind(){
     if(bound)return;
-    root.addEventListener('deviceorientationabsolute',onOrientation,true);
-    root.addEventListener('deviceorientation',onOrientation,true);
+    absoluteEvents=0;
+    root.addEventListener('deviceorientationabsolute',onAbsoluteOrientation,true);
+    root.addEventListener('deviceorientation',onRelativeOrientation,true);
     bound=true;
   }
 
   function unbind(){
     if(!bound)return;
-    root.removeEventListener('deviceorientationabsolute',onOrientation,true);
-    root.removeEventListener('deviceorientation',onOrientation,true);
+    root.removeEventListener('deviceorientationabsolute',onAbsoluteOrientation,true);
+    root.removeEventListener('deviceorientation',onRelativeOrientation,true);
     bound=false;
+    absoluteEvents=0;
   }
 
   async function requestPermission(){
@@ -93,6 +114,7 @@
   function stop(){
     active=false;
     unbind();
+    rawHeading=null;
     state().setSensorHeading(null,null);
     state().setSensorState('idle',state().get().permissionState);
   }
@@ -108,6 +130,7 @@
 
   function resetCalibration(){
     setCalibrationOffset(0);
+    rawHeading=null;
     state().setSensorHeading(null,null);
     return true;
   }

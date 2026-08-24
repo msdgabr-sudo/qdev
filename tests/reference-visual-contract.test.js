@@ -22,6 +22,7 @@ for(const required of [
   'القبلة الحسابية',
   'درجة الانحراف',
   'معايرة البوصلة يدوياً',
+  '🔄',
   'إعادة ضبط + تصحيح الانحراف',
   'GNSS &amp; GPS',
   'الانحراف عن الكعبة',
@@ -33,9 +34,14 @@ const actionOrder=['id="qd-gps"','id="qd-confidence"','id="qd-calibrate"'].map((
 assert(actionOrder[0]<actionOrder[1]&&actionOrder[1]<actionOrder[2],'RTL action row must place GNSS right, confidence center, calibration left');
 
 assert(css.includes('--qd-line: rgba(218, 174, 72, .86)'),'approved gold border identity must be exact');
-assert(css.includes('top: calc(env(safe-area-inset-top, 0px) + 68px)'),'home control must retain the approved vertical position');
+assert(css.includes("font-family: 'Noto Naskh Arabic', serif"),'screen typography must use the application reference font');
+assert(css.includes('max-width: 420px'),'screen container must retain the application page width');
+assert(css.includes('padding: 48px 12px max(8px, env(safe-area-inset-bottom))'),'screen container must retain the application top and side spacing');
+assert(css.includes('top: calc(env(safe-area-inset-top, 0px) + 46px)'),'home control must retain the approved vertical position');
 assert(css.includes('right: 12px'),'home control must retain the approved RTL edge position');
-assert(css.includes('width: min(97%, 55vh, 500px)'),'compass footprint must match the approved final layout');
+assert(page.includes('width="21" height="21"'),'home glyph must retain the approved 21px size');
+assert(css.includes('width: min(97vw, 55vh, 500px)'),'compass footprint must match the approved final layout');
+assert(css.includes('margin: 18px auto 3px'),'compass must retain the application page vertical offset');
 assert(css.includes('grid-template-columns: repeat(3, minmax(0, 1fr))'),'both card rows must retain three equal columns');
 
 assert(renderer.includes('for(var d=0;d<360;d+=10)'),'inner dial degree labels must not be simplified away');
